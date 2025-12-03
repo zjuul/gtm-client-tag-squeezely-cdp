@@ -49,6 +49,62 @@ ___TEMPLATE_PARAMETERS___
     ]
   },
   {
+    "type": "SELECT",
+    "name": "tagType",
+    "displayName": "Tag Type",
+    "selectItems": [
+      {
+        "value": "base",
+        "displayValue": "Base Tag"
+      },
+      {
+        "value": "event",
+        "displayValue": "Event Tag"
+      }
+    ],
+    "simpleValueType": true,
+    "defaultValue": "base"
+  },
+  {
+    "type": "TEXT",
+    "name": "eventName",
+    "displayName": "Event Name",
+    "simpleValueType": true,
+    "enablingConditions": [
+      {
+        "paramName": "tagType",
+        "paramValue": "event",
+        "type": "EQUALS"
+      }
+    ]
+  },
+  {
+    "type": "SIMPLE_TABLE",
+    "name": "eventParameters",
+    "displayName": "Event Parameters",
+    "simpleTableColumns": [
+      {
+        "defaultValue": "",
+        "displayName": "Key",
+        "name": "key",
+        "type": "TEXT"
+      },
+      {
+        "defaultValue": "",
+        "displayName": "Value",
+        "name": "value",
+        "type": "TEXT"
+      }
+    ],
+    "enablingConditions": [
+      {
+        "paramName": "tagType",
+        "paramValue": "event",
+        "type": "EQUALS"
+      }
+    ]
+  },
+  {
     "type": "CHECKBOX",
     "name": "customConsentManagement",
     "checkboxText": "Respect visitors\u0027 consent",
@@ -196,6 +252,21 @@ if(data.customConsentManagement && !data.noConsentMode){
       setConsent();
     }
   });
+}
+
+if (data.tagType === 'event') {
+  const eventData = {
+    event: data.eventName
+  };
+
+  if (data.eventParameters) {
+    data.eventParameters.forEach(param => {
+      eventData[param.key] = param.value;
+    });
+  }
+
+  sqzlPush(eventData);
+  log('_sqzl.push(' + JSON.stringify(eventData) + ')');
 }
 
 injectScript('https://squeezely.tech/tracker/' + data.squeezelyID + '/sqzl.js', data.gtmOnSuccess, data.gtmOnFailure, 'sqzlTag');
