@@ -43,7 +43,7 @@ ___TEMPLATE_PARAMETERS___
       {
         "type": "REGEX",
         "args": [
-          "^SQ-\\d{7}$"
+          "^SQ-\\d+$"
         ]
       }
     ]
@@ -261,7 +261,9 @@ if (data.tagType === 'event') {
 
   if (data.eventParameters) {
     data.eventParameters.forEach(param => {
-      eventData[param.key] = param.value;
+      if (param.value !== undefined && param.value !== null) {
+        eventData[param.key] = param.value;
+      }
     });
   }
 
