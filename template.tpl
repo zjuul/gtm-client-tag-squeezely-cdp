@@ -1,4 +1,4 @@
-﻿___TERMS_OF_SERVICE___
+___TERMS_OF_SERVICE___
 
 By creating or modifying this file you agree to Google Tag Manager's Community
 Template Gallery Developer Terms of Service available at
@@ -43,8 +43,64 @@ ___TEMPLATE_PARAMETERS___
       {
         "type": "REGEX",
         "args": [
-          "^SQ-\\d{7}$"
+          "^SQ-\\d+$"
         ]
+      }
+    ]
+  },
+  {
+    "type": "SELECT",
+    "name": "tagType",
+    "displayName": "Tag Type",
+    "selectItems": [
+      {
+        "value": "base",
+        "displayValue": "Base Tag"
+      },
+      {
+        "value": "event",
+        "displayValue": "Event Tag"
+      }
+    ],
+    "simpleValueType": true,
+    "defaultValue": "base"
+  },
+  {
+    "type": "TEXT",
+    "name": "eventName",
+    "displayName": "Event Name",
+    "simpleValueType": true,
+    "enablingConditions": [
+      {
+        "paramName": "tagType",
+        "paramValue": "event",
+        "type": "EQUALS"
+      }
+    ]
+  },
+  {
+    "type": "SIMPLE_TABLE",
+    "name": "eventParameters",
+    "displayName": "Event Parameters",
+    "simpleTableColumns": [
+      {
+        "defaultValue": "",
+        "displayName": "Key",
+        "name": "key",
+        "type": "TEXT"
+      },
+      {
+        "defaultValue": "",
+        "displayName": "Value",
+        "name": "value",
+        "type": "TEXT"
+      }
+    ],
+    "enablingConditions": [
+      {
+        "paramName": "tagType",
+        "paramValue": "event",
+        "type": "EQUALS"
       }
     ]
   },
@@ -196,6 +252,23 @@ if(data.customConsentManagement && !data.noConsentMode){
       setConsent();
     }
   });
+}
+
+if (data.tagType === 'event') {
+  const eventData = {
+    event: data.eventName
+  };
+
+  if (data.eventParameters) {
+    data.eventParameters.forEach(param => {
+      if (param.value !== undefined && param.value !== null) {
+        eventData[param.key] = param.value;
+      }
+    });
+  }
+
+  sqzlPush(eventData);
+  log('_sqzl.push(' + JSON.stringify(eventData) + ')');
 }
 
 injectScript('https://squeezely.tech/tracker/' + data.squeezelyID + '/sqzl.js', data.gtmOnSuccess, data.gtmOnFailure, 'sqzlTag');
