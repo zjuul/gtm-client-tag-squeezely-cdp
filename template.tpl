@@ -1,4 +1,4 @@
-﻿___TERMS_OF_SERVICE___
+___TERMS_OF_SERVICE___
 
 By creating or modifying this file you agree to Google Tag Manager's Community
 Template Gallery Developer Terms of Service available at
@@ -261,7 +261,9 @@ if (data.tagType === 'event') {
 
   if (data.eventParameters) {
     data.eventParameters.forEach(param => {
-      eventData[param.key] = param.value;
+      if (param.value !== undefined && param.value !== null) {
+        eventData[param.key] = param.value;
+      }
     });
   }
 
