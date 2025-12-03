@@ -43,7 +43,7 @@ ___TEMPLATE_PARAMETERS___
       {
         "type": "REGEX",
         "args": [
-          "^SQ-\\d{7}$"
+          "^SQ-\\d+$"
         ]
       }
     ]
